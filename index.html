@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>¡Feliz Cumpleaños, Hennys!</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            background: linear-gradient(to bottom, #b3e5fc, #e0f7fa);
+            font-family: 'Roboto', sans-serif;
+            color: #001f3f;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            box-sizing: border-box;
+        }
+        h1 {
+            font-size: 2.8rem;
+            color: #007bff;
+            margin-bottom: 10px;
+        }
+        p.intro {
+            font-size: 1.3rem;
+            max-width: 90%;
+            margin-bottom: 40px;
+        }
+        #game {
+            width: 100%;
+            max-width: 600px;
+        }
+        #knob-container {
+            width: 300px;
+            height: 300px;
+            margin: 40px auto;
+        }
+        #knob {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.9);
+            position: relative;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+            cursor: grab;
+        }
+        #knob:active {
+            cursor: grabbing;
+        }
+        #pointer {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            width: 12px;
+            height: 140px;
+            background: #007bff;
+            border-radius: 6px;
+            transform: translate(-50%, -100%) rotate(0deg);
+            transform-origin: bottom center;
+            box-shadow: 0 0 15px rgba(0, 123, 255, 0.6);
+        }
+        #centerValue {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 3.5rem;
+            font-weight: bold;
+            color: #007bff;
+        }
+        .tick {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            background: #007bff;
+            border-radius: 2px;
+        }
+        .label {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: #001f3f;
+        }
+        #ciphertext {
+            background: rgba(255, 255, 255, 0.8);
+            padding: 30px;
+            border-radius: 20px;
+            font-size: 1.5rem;
+            line-height: 2.2;
+            margin: 30px 0;
+            min-height: 200px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            opacity: 1;
+            transition: opacity 0.4s ease;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            color: #001f3f;
+        }
+        #final {
+            display: none;
+            width: 100%;
+            max-width: 600px;
+        }
+        #final h2 {
+            font-size: 2.5rem;
+            color: #007bff;
+            margin-bottom: 40px;
+        }
+        #poem {
+            font-family: 'Dancing Script', cursive;
+            font-size: 2.2rem;
+            line-height: 2.4;
+            color: #001f3f;
+            margin: 40px 0;
+        }
+        .signature {
+            font-style: italic;
+            font-size: 1.6rem;
+            margin-top: 60px;
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+    <h1>¡Feliz Cumpleaños, Hennys! 💙</h1>
+    <p class="intro">Silver te ha escondido un poema muy especial.<br>Gira la rueda para descifrarlo...</p>
+
+    <div id="game">
+        <div id="knob-container">
+            <div id="knob">
+                <div id="pointer"></div>
+                <div id="centerValue">0</div>
+            </div>
+        </div>
+        <pre id="ciphertext"></pre>
+    </div>
+
+    <div id="final">
+        <h2>¡Lo conseguiste! 🎉</h2>
+        <div id="poem"></div>
+        <p class="signature">Con todo mi cariño,<br>Silver</p>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+    <script>
+        const original = `Al alba de este año,
+el sol despereza su luz,
+brillando como nunca,
+un susurro en el aire.
+No hay cartillas que expresen
+la emoción que danza
+en el umbral de mis ojos,
+ni sombrillas que frenen
+las lágrimas que brotan
+de un amor sincero.
+Hoy celebro tu ser,
+firmeza y bondad,
+humanidad iluminada,
+hermana del alma.
+En mis plegarias,
+te envuelvo,
+pidiendo que tus sueños
+se dibujen en la bruma del mañana.
+Aunque el camino
+pueda doler,
+la esperanza empieza
+con un paso incierto,
+ya que siempre florece
+después de la tormenta.`;
+
+        const shiftAmount = 13;
+
+        function caesar(text, shift) {
+            return text.split('').map(char => {
+                if (char.match(/[a-z]/i)) {
+                    const code = char.charCodeAt(0);
+                    const base = code >= 65 && code <= 90 ? 65 : 97;
+                    return String.fromCharCode(((code - base + shift) % 26) + base);
+                }
+                return char;
+            }).join('');
+        }
+
+        const encrypted = caesar(original, shiftAmount);
+
+        const ciphertextEl = document.getElementById('ciphertext');
+        const knob = document.getElementById('knob');
+        const pointer = document.getElementById('pointer');
+        const centerValue = document.getElementById('centerValue');
+        const game = document.getElementById('game');
+        const finalSection = document.getElementById('final');
+        const poemEl = document.getElementById('poem');
+
+        let won = false;
+        let isDragging = false;
+        let centerX, centerY;
+        const degreesPerStep = 360 / 26;
+
+        // Generar marcas precisas (una por cada número) y etiquetas cada 5
+        const radiusTick = 130;
+        const radiusLabel = 170;
+        for (let i = 0; i < 26; i++) {
+            const angle = i * degreesPerStep;
+            const tick = document.createElement('div');
+            tick.className = 'tick';
+            tick.style.width = (i % 5 === 0 ? '6px' : '3px');
+            tick.style.height = (i % 5 === 0 ? '40px' : '25px');
+            tick.style.transform = `translate(-50%, -50%) rotate(${angle}deg) translateY(-${radiusTick}px)`;
+            knob.appendChild(tick);
+
+            if (i % 5 === 0) {
+                const label = document.createElement('div');
+                label.className = 'label';
+                label.textContent = i;
+                label.style.transform = `translate(-50%, -50%) rotate(${angle}deg) translateY(-${radiusLabel}px) rotate(-${angle}deg)`;
+                knob.appendChild(label);
+            }
+        }
+
+        function getTouchPos(e) {
+            return {
+                x: e.touches ? e.touches[0].clientX : e.clientX,
+                y: e.touches ? e.touches[0].clientY : e.clientY
+            };
+        }
+
+        function updateShift(e) {
+            if (!isDragging) return;
+
+            const pos = getTouchPos(e);
+            const dx = pos.x - centerX;
+            const dy = pos.y - centerY;
+
+            let rawAngle = Math.atan2(dy, dx) * 180 / Math.PI;
+            if (rawAngle < 0) rawAngle += 360;
+            let angle = (rawAngle + 90) % 360; // 0 arriba
+
+            pointer.style.transform = `translate(-50%, -100%) rotate(${angle}deg)`;
+
+            let shift = Math.round(angle / degreesPerStep) % 26;
+            centerValue.textContent = shift;
+
+            const decrypted = caesar(encrypted, shift);
+
+            // Fade suave
+            ciphertextEl.style.opacity = 0;
+            setTimeout(() => {
+                ciphertextEl.textContent = decrypted;
+                ciphertextEl.style.opacity = 1;
+
+                if (decrypted === original && !won) {
+                    won = true;
+                    setTimeout(triggerWin, 800);
+                }
+            }, 400);
+        }
+
+        knob.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            const rect = knob.getBoundingClientRect();
+            centerX = rect.left + rect.width / 2;
+            centerY = rect.top + rect.height / 2;
+            updateShift(e);
+        });
+
+        knob.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            isDragging = true;
+            const rect = knob.getBoundingClientRect();
+            centerX = rect.left + rect.width / 2;
+            centerY = rect.top + rect.height / 2;
+            updateShift(e);
+        });
+
+        document.addEventListener('mousemove', updateShift);
+        document.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+            updateShift(e);
+        });
+
+        document.addEventListener('mouseup', () => isDragging = false);
+        document.addEventListener('touchend', () => isDragging = false);
+
+        function triggerWin() {
+            game.style.display = 'none';
+            finalSection.style.display = 'block';
+            poemEl.textContent = original;
+
+            // Confeti
+            const burst = () => {
+                confetti({
+                    particleCount: 150,
+                    spread: 80,
+                    origin: { y: 0.6 },
+                    colors: ['#81d4fa', '#b3e5fc', '#007bff', '#ffffff', '#e0f7fa']
+                });
+            };
+            burst();
+            setTimeout(burst, 500);
+            setTimeout(burst, 1000);
+            setTimeout(() => confetti({ particleCount: 80, angle: 60, spread: 55, origin: { x: 0 } }), 300);
+            setTimeout(() => confetti({ particleCount: 80, angle: 120, spread: 55, origin: { x: 1 } }), 600);
+        }
+
+        // Inicial
+        ciphertextEl.textContent = encrypted;
+    </script>
+</body>
+</html>
