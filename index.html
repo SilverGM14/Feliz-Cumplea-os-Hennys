@@ -3,23 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>¡Feliz Cumpleaños, Hennys!</title>
-    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <title>Para Hennys 💙</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #007bff;
-            --secondary: #00d4ff;
-            --text: #001f3f;
+            --primary: #4fc3f7;
+            --soft-glow: rgba(79, 195, 247, 0.4);
+            --text: #01579b;
         }
 
         body {
             margin: 0;
             padding: 20px;
             min-height: 100vh;
-            /* Fondo con gradiente animado */
-            background: linear-gradient(-45deg, #b3e5fc, #e0f7fa, #81d4fa, #ffffff);
+            /* Fondo animado visible desde el principio */
+            background: linear-gradient(-45deg, #e1f5fe, #b3e5fc, #e0f2f1, #ffffff);
             background-size: 400% 400%;
-            animation: gradientBG 15s ease infinite;
+            animation: gradientBG 20s ease infinite;
             font-family: 'Roboto', sans-serif;
             color: var(--text);
             display: flex;
@@ -27,7 +27,6 @@
             align-items: center;
             justify-content: center;
             overflow-x: hidden;
-            box-sizing: border-box;
         }
 
         @keyframes gradientBG {
@@ -36,55 +35,113 @@
             100% { background-position: 0% 50%; }
         }
 
-        /* Contenedor Efecto Cristal */
+        /* --- PANTALLA DE INTRODUCCIÓN --- */
+        #intro-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000; /* Por encima de todo */
+            cursor: pointer;
+            transition: opacity 0.8s ease-out, visibility 0.8s;
+            background: rgba(255, 255, 255, 0.1); /* Ligero tinte */
+            backdrop-filter: blur(5px);
+        }
+
+        #intro-screen.fade-out {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .intro-heart {
+            font-size: 6rem;
+            margin-bottom: 20px;
+            animation: heartbeatIntro 1.5s infinite ease-in-out;
+            text-shadow: 0 0 20px rgba(79, 195, 247, 0.6);
+        }
+
+        .intro-text {
+            font-family: 'Dancing Script', cursive;
+            font-size: 2.5rem;
+            color: var(--text);
+            animation: pulseText 2s infinite;
+        }
+
+        @keyframes heartbeatIntro {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+        }
+        @keyframes pulseText {
+            0%, 100% { opacity: 0.8; }
+            50% { opacity: 1; }
+        }
+
+        /* --- CONTENEDOR PRINCIPAL (Oculto inicialmente) --- */
         .container {
-            background: rgba(255, 255, 255, 0.3);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            border-radius: 30px;
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            border-radius: 40px;
             padding: 40px;
-            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
-            max-width: 700px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.05);
+            max-width: 600px;
             width: 100%;
             z-index: 1;
             text-align: center;
+            /* Estado inicial oculto */
+            opacity: 0;
+            transform: translateY(30px) scale(0.95);
+            transition: all 0.8s ease-out;
+        }
+
+        /* Clase para mostrar el contenedor */
+        .container.container-visible {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+        /* Estilos del Juego (Mismos que antes) */
+        .warm-pulse {
+            animation: heartbeat 2s infinite ease-in-out;
+            box-shadow: 0 0 30px var(--soft-glow) !important;
+            border-color: var(--primary) !important;
+        }
+        @keyframes heartbeat {
+            0% { transform: scale(1); filter: brightness(100%); }
+            50% { transform: scale(1.02); filter: brightness(105%); }
+            100% { transform: scale(1); filter: brightness(100%); }
         }
 
         h1 {
             font-family: 'Dancing Script', cursive;
-            font-size: 3.5rem;
-            color: var(--primary);
-            margin-top: 0;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.05);
-        }
-
-        p.intro {
-            font-size: 1.2rem;
-            margin-bottom: 30px;
-            line-height: 1.5;
+            font-size: 3rem;
+            margin-bottom: 10px;
+            color: var(--text);
         }
 
         #ciphertext {
-            background: rgba(255, 255, 255, 0.5);
+            background: rgba(255, 255, 255, 0.6);
             padding: 25px;
-            border-radius: 20px;
-            font-size: 1.3rem;
+            border-radius: 25px;
+            font-size: 1.2rem;
             line-height: 1.8;
             margin: 20px 0;
-            min-height: 180px;
-            transition: opacity 0.3s ease;
-            white-space: pre-wrap;
-            word-wrap: break-word;
-            border: 2px dashed var(--primary);
-            color: #444;
+            min-height: 200px;
+            border: 2px solid transparent;
+            white-space: pre-wrap; 
+            transition: all 0.3s ease;
+            color: #546e7a;
         }
 
-        /* Estilización del Slider */
-        .slider-container {
-            margin: 30px 0;
-        }
-
+        .slider-wrapper { margin: 30px 0; }
+        
         input[type=range] {
             -webkit-appearance: none;
             width: 100%;
@@ -92,49 +149,36 @@
         }
 
         input[type=range]::-webkit-slider-runnable-track {
-            width: 100%;
-            height: 10px;
-            background: rgba(0, 123, 255, 0.3);
-            border-radius: 5px;
+            height: 6px;
+            background: rgba(1, 87, 155, 0.1);
+            border-radius: 3px;
         }
 
         input[type=range]::-webkit-slider-thumb {
             -webkit-appearance: none;
-            height: 28px;
-            width: 28px;
+            height: 30px;
+            width: 30px;
             border-radius: 50%;
-            background: var(--primary);
+            background: #ffffff;
+            border: 3px solid var(--primary);
             cursor: pointer;
-            margin-top: -9px;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
-            border: 3px solid white;
+            margin-top: -12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
 
-        #shiftValue {
-            font-weight: bold;
-            color: var(--primary);
-            font-size: 1.5rem;
-        }
-
-        /* Sección Final */
-        #final {
-            display: none;
-        }
-
-        #final h2 {
-            font-size: 2.5rem;
-            color: var(--primary);
-        }
+        #final { display: none; }
 
         #poem {
             font-family: 'Dancing Script', cursive;
-            font-size: 2.2rem;
-            line-height: 1.6;
-            color: #004a99;
+            font-size: 1.8rem;
+            line-height: 1.8;
+            color: #01579b;
+            text-align: center;
+            white-space: pre-line;
             margin: 30px 0;
             opacity: 0;
             transform: translateY(20px);
-            transition: all 1.5s ease;
+            transition: all 2s ease;
         }
 
         .visible #poem {
@@ -142,73 +186,98 @@
             transform: translateY(0);
         }
 
-        .signature {
-            font-style: italic;
-            font-size: 1.5rem;
-            margin-top: 40px;
-            text-align: right;
-            color: var(--text);
+        .music-control {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: white;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            z-index: 100;
+            font-size: 1.2rem;
+            opacity: 0; /* Oculto al inicio */
+            transition: opacity 1s;
         }
+        .music-control.show { opacity: 1; }
 
-        /* Burbujas decorativas */
         .bubble {
             position: absolute;
-            bottom: -100px;
-            background: rgba(255, 255, 255, 0.4);
+            background: rgba(255, 255, 255, 0.5);
             border-radius: 50%;
-            opacity: 0.6;
-            animation: rise 12s infinite ease-in;
             z-index: 0;
+            animation: float 15s infinite linear;
+            pointer-events: none;
         }
 
-        @keyframes rise {
-            0% { bottom: -100px; transform: translateX(0); }
-            50% { transform: translateX(100px); }
-            100% { bottom: 110vh; transform: translateX(-150px); }
+        @keyframes float {
+            0% { transform: translateY(100vh) scale(0); opacity: 0; }
+            50% { opacity: 0.8; }
+            100% { transform: translateY(-10vh) scale(1); opacity: 0; }
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <h1>¡Feliz Cumpleaños, Hennys! 💙</h1>
-        
+    <audio id="bgMusic" loop>
+        <source src="01. Dearly Beloved.mp3" type="audio/mpeg">
+    </audio>
+
+    <div id="intro-screen">
+        <div class="intro-heart">💙</div>
+        <div class="intro-text">Pulsa aquí</div>
+    </div>
+
+    <div class="music-control" onclick="toggleMusic()" id="musicBtn">🎵</div>
+
+    <div class="container" id="main-card">
         <div id="game">
-            <p class="intro">Hay un mensaje especial oculto para ti... <br>Usa el deslizador para encontrar la frecuencia correcta.</p>
+            <h1>Para Hennys...</h1>
+            <p style="font-weight: 300;">Desliza para descubrir que pone...</p>
             <pre id="ciphertext"></pre>
-            <div class="slider-container">
-                <label>Desplazamiento: <span id="shiftValue">0</span></label>
+            
+            <div class="slider-wrapper">
+                <p>Sintonía: <span id="shiftValue" style="font-weight: bold;">0</span></p>
                 <input type="range" id="shift" min="0" max="25" value="0">
             </div>
         </div>
 
         <div id="final">
-            <h2>¡Lo descubriste! 🎉</h2>
+            <h1>¡Feliz Cumpleaños! 🎉</h1>
             <div id="poem"></div>
-            <p class="signature">Con todo mi cariño,<br><strong>Silver</strong></p>
+            <p style="font-family: 'Dancing Script'; font-size: 1.8rem; text-align: right; margin-top: 40px;">— Silver</p>
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
     <script>
-        const original = `Al alba de este año,
+        const originalPoem = `Al alba de este año,
 el sol despereza su luz,
 brillando como nunca,
 un susurro en el aire.
+
 No hay cartillas que expresen
 la emoción que danza
 en el umbral de mis ojos,
 ni sombrillas que frenen
 las lágrimas que brotan
 de un amor sincero.
+
 Hoy celebro tu ser,
 firmeza y bondad,
 humanidad iluminada,
 hermana del alma.
+
 En mis plegarias,
 te envuelvo,
 pidiendo que tus sueños
 se dibujen en la bruma del mañana.
+
 Aunque el camino
 pueda doler,
 la esperanza empieza
@@ -216,8 +285,38 @@ con un paso incierto,
 ya que siempre florece
 después de la tormenta.`;
 
-        const shiftAmount = 13; // El desplazamiento real para descifrar
+        const targetShift = 13;
+        const bgMusic = document.getElementById('bgMusic');
+        const ciphertextEl = document.getElementById('ciphertext');
+        const shiftInput = document.getElementById('shift');
+        const shiftValue = document.getElementById('shiftValue');
+        const mainCard = document.getElementById('main-card');
+        const finalSection = document.getElementById('final');
+        const poemEl = document.getElementById('poem');
+        const introScreen = document.getElementById('intro-screen');
+        const musicBtn = document.getElementById('musicBtn');
+        
+        let winTimer = null;
+        let won = false;
 
+        // --- LÓGICA DE LA INTRODUCCIÓN ---
+        introScreen.addEventListener('click', () => {
+            // 1. Iniciar música
+            bgMusic.play().catch(e => console.log("Audio play failed:", e));
+            
+            // 2. Desvanecer intro
+            introScreen.classList.add('fade-out');
+            
+            // 3. Mostrar tarjeta principal con retraso para suavidad
+            setTimeout(() => {
+                mainCard.classList.add('container-visible');
+                musicBtn.classList.add('show');
+            }, 300);
+
+        }, { once: true }); // Se ejecuta solo una vez
+
+
+        // --- LÓGICA DEL JUEGO (Cifrado César) ---
         function caesar(text, shift) {
             return text.split('').map(char => {
                 if (char.match(/[a-z]/i)) {
@@ -229,91 +328,86 @@ después de la tormenta.`;
             }).join('');
         }
 
-        const encrypted = caesar(original, shiftAmount);
-        const ciphertextEl = document.getElementById('ciphertext');
-        const shiftInput = document.getElementById('shift');
-        const shiftValue = document.getElementById('shiftValue');
-        const game = document.getElementById('game');
-        const finalSection = document.getElementById('final');
-        const poemEl = document.getElementById('poem');
+        const encrypted = caesar(originalPoem, targetShift);
+        ciphertextEl.textContent = encrypted;
 
-        let won = false;
-
-        function updateText() {
+        function update() {
             if (won) return;
-            const currentShift = parseInt(shiftInput.value);
-            shiftValue.textContent = currentShift;
-
-            // Se aplica el desplazamiento inverso para descifrar
-            const decrypted = caesar(encrypted, currentShift);
+            const val = parseInt(shiftInput.value);
+            shiftValue.textContent = val;
             
-            ciphertextEl.style.opacity = 0.5;
-            setTimeout(() => {
-                ciphertextEl.textContent = decrypted;
-                ciphertextEl.style.opacity = 1;
+            const distance = Math.abs(val - targetShift);
+            ciphertextEl.textContent = caesar(encrypted, val);
 
-                if (decrypted === original && !won) {
-                    won = true;
-                    setTimeout(triggerWin, 600);
+            // Vibración Hápica (Móvil)
+            if ('vibrate' in navigator) {
+                if (distance === 0) navigator.vibrate([100, 50, 100]);
+                else if (distance === 1) navigator.vibrate(40);
+                else if (distance === 2) navigator.vibrate(20);
+            }
+
+            // Animación y Temporizador de Victoria
+            if (distance === 0) {
+                mainCard.classList.add('warm-pulse');
+                if (!winTimer) {
+                    // Espera 1.5s en la posición correcta
+                    winTimer = setTimeout(triggerWin, 1500);
                 }
-            }, 150);
-        }
-
-        function triggerWin() {
-            game.style.display = 'none';
-            finalSection.style.display = 'block';
-            
-            // Retraso para la animación de entrada del poema
-            setTimeout(() => {
-                finalSection.classList.add('visible');
-                poemEl.textContent = original;
-            }, 100);
-
-            // Explosión de confeti
-            const duration = 3 * 1000;
-            const end = Date.now() + duration;
-
-            (function frame() {
-                confetti({
-                    particleCount: 5,
-                    angle: 60,
-                    spread: 55,
-                    origin: { x: 0 },
-                    colors: ['#007bff', '#81d4fa']
-                });
-                confetti({
-                    particleCount: 5,
-                    angle: 120,
-                    spread: 55,
-                    origin: { x: 1 },
-                    colors: ['#007bff', '#ffffff']
-                });
-
-                if (Date.now() < end) {
-                    requestAnimationFrame(frame);
-                }
-            }());
-        }
-
-        // Crear burbujas de fondo dinámicamente
-        function createBubbles() {
-            for (let i = 0; i < 15; i++) {
-                const bubble = document.createElement('div');
-                bubble.className = 'bubble';
-                const size = Math.random() * 60 + 20 + 'px';
-                bubble.style.width = size;
-                bubble.style.height = size;
-                bubble.style.left = Math.random() * 100 + 'vw';
-                bubble.style.animationDuration = Math.random() * 8 + 6 + 's';
-                bubble.style.animationDelay = Math.random() * 5 + 's';
-                document.body.appendChild(bubble);
+            } else {
+                mainCard.classList.remove('warm-pulse');
+                clearTimeout(winTimer);
+                winTimer = null;
             }
         }
 
-        // Inicio
+        function triggerWin() {
+            won = true;
+            mainCard.classList.remove('warm-pulse'); // Parar el latido
+            document.getElementById('game').style.display = 'none';
+            finalSection.style.display = 'block';
+            
+            setTimeout(() => {
+                finalSection.classList.add('visible');
+                poemEl.textContent = originalPoem;
+            }, 100);
+
+            // Confeti elegante
+            const count = 200;
+            const defaults = { origin: { y: 0.7 }, colors: ['#4fc3f7', '#ffffff', '#e1f5fe'] };
+            function fire(particleRatio, opts) {
+                confetti({ ...defaults, ...opts, particleCount: Math.floor(count * particleRatio) });
+            }
+            fire(0.25, { spread: 26, startVelocity: 55 });
+            fire(0.2, { spread: 60 });
+            fire(0.35, { spread: 100, decay: 0.91, scalar: 0.8 });
+            fire(0.1, { spread: 120, startVelocity: 25, decay: 0.92, scalar: 1.2 });
+        }
+
+        function toggleMusic() {
+            if (bgMusic.paused) {
+                bgMusic.play();
+                musicBtn.textContent = '🎵';
+            } else {
+                bgMusic.pause();
+                musicBtn.textContent = '🔇';
+            }
+        }
+
+        function createBubbles() {
+            for (let i = 0; i < 12; i++) {
+                const b = document.createElement('div');
+                b.className = 'bubble';
+                const size = Math.random() * 40 + 10 + 'px';
+                b.style.width = size; b.style.height = size;
+                b.style.left = Math.random() * 100 + 'vw';
+                b.style.animationDuration = Math.random() * 10 + 10 + 's';
+                b.style.animationDelay = Math.random() * 5 + 's';
+                document.body.appendChild(b);
+            }
+        }
+
+        shiftInput.oninput = update;
         createBubbles();
-        ciphertextEl.textContent = encrypted;
-        shiftInput.oninput = updateText;
     </script>
 </body>
 </html>
