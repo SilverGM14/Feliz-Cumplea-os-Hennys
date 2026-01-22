@@ -2,21 +2,21 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Para Hennys 💙</title>
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary: #4fc3f7;
-            --soft-glow: rgba(79, 195, 247, 0.4);
+            --soft-glow: rgba(79, 195, 247, 0.5);
             --text: #01579b;
         }
 
         body {
             margin: 0;
-            padding: 20px;
+            padding: 15px;
             min-height: 100vh;
-            /* Fondo animado visible desde el principio */
+            /* Fondo animado */
             background: linear-gradient(-45deg, #e1f5fe, #b3e5fc, #e0f2f1, #ffffff);
             background-size: 400% 400%;
             animation: gradientBG 20s ease infinite;
@@ -27,6 +27,8 @@
             align-items: center;
             justify-content: center;
             overflow-x: hidden;
+            /* Evita rebote en scroll móvil */
+            overscroll-behavior: none;
         }
 
         @keyframes gradientBG {
@@ -38,79 +40,57 @@
         /* --- PANTALLA DE INTRODUCCIÓN --- */
         #intro-screen {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0; width: 100%; height: 100%;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            z-index: 1000; /* Por encima de todo */
+            z-index: 1000;
             cursor: pointer;
             transition: opacity 0.8s ease-out, visibility 0.8s;
-            background: rgba(255, 255, 255, 0.1); /* Ligero tinte */
-            backdrop-filter: blur(5px);
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
         }
 
         #intro-screen.fade-out {
-            opacity: 0;
-            visibility: hidden;
-            pointer-events: none;
+            opacity: 0; visibility: hidden; pointer-events: none;
         }
 
         .intro-heart {
-            font-size: 6rem;
-            margin-bottom: 20px;
+            font-size: 6rem; margin-bottom: 20px;
             animation: heartbeatIntro 1.5s infinite ease-in-out;
             text-shadow: 0 0 20px rgba(79, 195, 247, 0.6);
         }
-
         .intro-text {
             font-family: 'Dancing Script', cursive;
-            font-size: 2.5rem;
-            color: var(--text);
+            font-size: 2.5rem; color: var(--text);
             animation: pulseText 2s infinite;
         }
+        @keyframes heartbeatIntro { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.15); } }
+        @keyframes pulseText { 0%, 100% { opacity: 0.8; } 50% { opacity: 1; } }
 
-        @keyframes heartbeatIntro {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.15); }
-        }
-        @keyframes pulseText {
-            0%, 100% { opacity: 0.8; }
-            50% { opacity: 1; }
-        }
-
-        /* --- CONTENEDOR PRINCIPAL (Oculto inicialmente) --- */
+        /* --- CONTENEDOR PRINCIPAL --- */
         .container {
             background: rgba(255, 255, 255, 0.4);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.6);
-            border-radius: 40px;
+            border-radius: 30px;
             padding: 40px;
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.05);
-            max-width: 600px;
-            width: 100%;
-            z-index: 1;
-            text-align: center;
-            /* Estado inicial oculto */
-            opacity: 0;
-            transform: translateY(30px) scale(0.95);
+            max-width: 600px; width: 100%;
+            z-index: 1; text-align: center;
+            opacity: 0; transform: translateY(30px) scale(0.95);
             transition: all 0.8s ease-out;
+            box-sizing: border-box;
         }
 
-        /* Clase para mostrar el contenedor */
-        .container.container-visible {
-            opacity: 1;
-            transform: translateY(0) scale(1);
-        }
+        .container.container-visible { opacity: 1; transform: translateY(0) scale(1); }
 
-        /* Estilos del Juego (Mismos que antes) */
+        /* Estilos del Juego */
         .warm-pulse {
             animation: heartbeat 2s infinite ease-in-out;
-            box-shadow: 0 0 30px var(--soft-glow) !important;
+            box-shadow: 0 0 40px var(--soft-glow) !important;
             border-color: var(--primary) !important;
         }
         @keyframes heartbeat {
@@ -121,104 +101,93 @@
 
         h1 {
             font-family: 'Dancing Script', cursive;
-            font-size: 3rem;
-            margin-bottom: 10px;
-            color: var(--text);
+            font-size: 3rem; margin: 0 0 15px 0; color: var(--text);
         }
 
         #ciphertext {
             background: rgba(255, 255, 255, 0.6);
-            padding: 25px;
-            border-radius: 25px;
-            font-size: 1.2rem;
-            line-height: 1.8;
-            margin: 20px 0;
-            min-height: 200px;
+            padding: 20px; border-radius: 20px;
+            font-size: 1.15rem; line-height: 1.6;
+            margin: 20px 0; min-height: 180px;
             border: 2px solid transparent;
-            white-space: pre-wrap; 
-            transition: all 0.3s ease;
-            color: #546e7a;
+            white-space: pre-wrap;
+            transition: all 0.3s ease; color: #546e7a;
         }
 
-        .slider-wrapper { margin: 30px 0; }
+        .slider-wrapper { margin: 30px 0; touch-action: none; }
         
-        input[type=range] {
-            -webkit-appearance: none;
-            width: 100%;
-            background: transparent;
-        }
-
+        input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; }
         input[type=range]::-webkit-slider-runnable-track {
-            height: 6px;
-            background: rgba(1, 87, 155, 0.1);
-            border-radius: 3px;
+            height: 8px; background: rgba(1, 87, 155, 0.1); border-radius: 4px;
         }
-
         input[type=range]::-webkit-slider-thumb {
             -webkit-appearance: none;
-            height: 30px;
-            width: 30px;
-            border-radius: 50%;
-            background: #ffffff;
-            border: 3px solid var(--primary);
-            cursor: pointer;
-            margin-top: -12px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            height: 32px; width: 32px; border-radius: 50%;
+            background: #ffffff; border: 3px solid var(--primary);
+            cursor: pointer; margin-top: -12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
         }
 
+        /* Sección Final y Poema */
         #final { display: none; }
 
-        #poem {
+        #poem-container {
             font-family: 'Dancing Script', cursive;
             font-size: 1.8rem;
-            line-height: 1.8;
+            line-height: 1.6;
             color: #01579b;
             text-align: center;
-            white-space: pre-line;
             margin: 30px 0;
-            opacity: 0;
-            transform: translateY(20px);
-            transition: all 2s ease;
         }
 
-        .visible #poem {
+        /* Estilos para la aparición progresiva de líneas */
+        .poem-line {
+            opacity: 0;
+            transform: translateY(15px);
+            transition: all 0.8s ease-out;
+            display: block; /* Fuerza salto de línea */
+            min-height: 1.5rem; /* Mantiene espacio para líneas vacías */
+        }
+        .poem-line.visible {
             opacity: 1;
             transform: translateY(0);
         }
 
+        /* Controles y fondo */
         .music-control {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: white;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            z-index: 100;
-            font-size: 1.2rem;
-            opacity: 0; /* Oculto al inicio */
-            transition: opacity 1s;
+            position: fixed; bottom: 20px; right: 20px;
+            background: white; border-radius: 50%; width: 50px; height: 50px;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            z-index: 100; font-size: 1.2rem; opacity: 0; transition: opacity 1s;
         }
         .music-control.show { opacity: 1; }
 
         .bubble {
-            position: absolute;
-            background: rgba(255, 255, 255, 0.5);
-            border-radius: 50%;
-            z-index: 0;
+            position: absolute; background: rgba(255, 255, 255, 0.5);
+            border-radius: 50%; z-index: 0; pointer-events: none;
             animation: float 15s infinite linear;
-            pointer-events: none;
         }
-
         @keyframes float {
             0% { transform: translateY(100vh) scale(0); opacity: 0; }
             50% { opacity: 0.8; }
             100% { transform: translateY(-10vh) scale(1); opacity: 0; }
+        }
+
+        /* --- OPTIMIZACIÓN PARA MÓVILES --- */
+        @media (max-width: 768px) {
+            body { padding: 10px; }
+            .container { padding: 30px 20px; border-radius: 25px; }
+            h1 { font-size: 2.5rem; }
+            .intro-heart { font-size: 5rem; }
+            .intro-text { font-size: 2rem; }
+            #ciphertext { font-size: 1rem; padding: 15px; min-height: 150px; }
+            #poem-container { font-size: 1.5rem; line-height: 1.5; }
+            .signature { font-size: 1.5rem !important; margin-top: 30px !important; }
+            /* Hacer el deslizador más fácil de tocar en móvil */
+            input[type=range]::-webkit-slider-thumb {
+                height: 36px; width: 36px; margin-top: -14px;
+            }
         }
     </style>
 </head>
@@ -238,19 +207,19 @@
     <div class="container" id="main-card">
         <div id="game">
             <h1>Para Hennys...</h1>
-            <p style="font-weight: 300;">Desliza para descubrir que pone...</p>
+            <p style="font-weight: 300; margin-bottom: 25px;">Desliza suavemente hasta sentir la frecuencia correcta.</p>
             <pre id="ciphertext"></pre>
             
             <div class="slider-wrapper">
-                <p>Sintonía: <span id="shiftValue" style="font-weight: bold;">0</span></p>
+                <p style="margin-bottom: 10px;">Sintonía: <span id="shiftValue" style="font-weight: bold; color: var(--primary);">0</span></p>
                 <input type="range" id="shift" min="0" max="25" value="0">
             </div>
         </div>
 
         <div id="final">
             <h1>¡Feliz Cumpleaños! 🎉</h1>
-            <div id="poem"></div>
-            <p style="font-family: 'Dancing Script'; font-size: 1.8rem; text-align: right; margin-top: 40px;">— Silver</p>
+            <div id="poem-container"></div>
+            <p class="signature" style="font-family: 'Dancing Script'; font-size: 1.8rem; text-align: right; margin-top: 40px;">— Silver</p>
         </div>
     </div>
 
@@ -285,38 +254,32 @@ con un paso incierto,
 ya que siempre florece
 después de la tormenta.`;
 
-        const targetShift = 13;
+        const targetShift = 13; // CAMBIADO AL 14
         const bgMusic = document.getElementById('bgMusic');
         const ciphertextEl = document.getElementById('ciphertext');
         const shiftInput = document.getElementById('shift');
         const shiftValue = document.getElementById('shiftValue');
         const mainCard = document.getElementById('main-card');
         const finalSection = document.getElementById('final');
-        const poemEl = document.getElementById('poem');
+        const poemContainerEl = document.getElementById('poem-container');
         const introScreen = document.getElementById('intro-screen');
         const musicBtn = document.getElementById('musicBtn');
         
         let winTimer = null;
         let won = false;
 
-        // --- LÓGICA DE LA INTRODUCCIÓN ---
+        // --- LÓGICA INTRO ---
         introScreen.addEventListener('click', () => {
-            // 1. Iniciar música
             bgMusic.play().catch(e => console.log("Audio play failed:", e));
-            
-            // 2. Desvanecer intro
             introScreen.classList.add('fade-out');
-            
-            // 3. Mostrar tarjeta principal con retraso para suavidad
             setTimeout(() => {
                 mainCard.classList.add('container-visible');
                 musicBtn.classList.add('show');
             }, 300);
+        }, { once: true });
 
-        }, { once: true }); // Se ejecuta solo una vez
 
-
-        // --- LÓGICA DEL JUEGO (Cifrado César) ---
+        // --- Cifrado César ---
         function caesar(text, shift) {
             return text.split('').map(char => {
                 if (char.match(/[a-z]/i)) {
@@ -339,19 +302,25 @@ después de la tormenta.`;
             const distance = Math.abs(val - targetShift);
             ciphertextEl.textContent = caesar(encrypted, val);
 
-            // Vibración Hápica (Móvil)
+            // --- VIBRACIÓN PROGRESIVA ---
             if ('vibrate' in navigator) {
-                if (distance === 0) navigator.vibrate([100, 50, 100]);
-                else if (distance === 1) navigator.vibrate(40);
-                else if (distance === 2) navigator.vibrate(20);
+                if (distance === 0) {
+                    // Vibración fuerte y larga al llegar
+                    navigator.vibrate([80, 30, 80]); 
+                } else if (distance <= 2) {
+                     // Vibración media si está muy cerca (1 o 2 de distancia)
+                    navigator.vibrate(40);
+                } else if (distance <= 4) {
+                    // Vibración corta y sutil si se acerca
+                    navigator.vibrate(15);
+                }
             }
 
-            // Animación y Temporizador de Victoria
+            // Animación y Temporizador
             if (distance === 0) {
                 mainCard.classList.add('warm-pulse');
                 if (!winTimer) {
-                    // Espera 1.5s en la posición correcta
-                    winTimer = setTimeout(triggerWin, 1500);
+                    winTimer = setTimeout(triggerWin, 1500); // 1.5s de espera
                 }
             } else {
                 mainCard.classList.remove('warm-pulse');
@@ -362,16 +331,28 @@ después de la tormenta.`;
 
         function triggerWin() {
             won = true;
-            mainCard.classList.remove('warm-pulse'); // Parar el latido
+            mainCard.classList.remove('warm-pulse');
             document.getElementById('game').style.display = 'none';
             finalSection.style.display = 'block';
             
-            setTimeout(() => {
-                finalSection.classList.add('visible');
-                poemEl.textContent = originalPoem;
-            }, 100);
+            // --- APARICIÓN PROGRESIVA DEL POEMA (MANTENIENDO FORMATO) ---
+            // Dividimos el poema por saltos de línea
+            const lines = originalPoem.split('\n');
+            
+            lines.forEach((line, index) => {
+                const lineSpan = document.createElement('span');
+                lineSpan.className = 'poem-line';
+                // Si la línea está vacía, usamos un espacio sin ruptura para mantener la estrofa
+                lineSpan.innerHTML = line.trim() === '' ? '&nbsp;' : line;
+                poemContainerEl.appendChild(lineSpan);
 
-            // Confeti elegante
+                // Hacemos aparecer cada línea con un retraso progresivo
+                setTimeout(() => {
+                    lineSpan.classList.add('visible');
+                }, index * 600); // 600ms entre cada línea
+            });
+
+            // Confeti
             const count = 200;
             const defaults = { origin: { y: 0.7 }, colors: ['#4fc3f7', '#ffffff', '#e1f5fe'] };
             function fire(particleRatio, opts) {
@@ -384,13 +365,8 @@ después de la tormenta.`;
         }
 
         function toggleMusic() {
-            if (bgMusic.paused) {
-                bgMusic.play();
-                musicBtn.textContent = '🎵';
-            } else {
-                bgMusic.pause();
-                musicBtn.textContent = '🔇';
-            }
+            if (bgMusic.paused) { bgMusic.play(); musicBtn.textContent = '🎵'; } 
+            else { bgMusic.pause(); musicBtn.textContent = '🔇'; }
         }
 
         function createBubbles() {
@@ -407,6 +383,8 @@ después de la tormenta.`;
         }
 
         shiftInput.oninput = update;
+        // Para móviles, también escuchamos el evento touchmove para mejor respuesta
+        shiftInput.addEventListener('touchmove', update);
         createBubbles();
     </script>
 </body>
