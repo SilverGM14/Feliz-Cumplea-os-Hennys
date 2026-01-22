@@ -16,7 +16,6 @@
             margin: 0;
             padding: 15px;
             min-height: 100vh;
-            /* Fondo animado */
             background: linear-gradient(-45deg, #e1f5fe, #b3e5fc, #e0f2f1, #ffffff);
             background-size: 400% 400%;
             animation: gradientBG 20s ease infinite;
@@ -27,8 +26,9 @@
             align-items: center;
             justify-content: center;
             overflow-x: hidden;
-            /* Evita rebote en scroll móvil */
             overscroll-behavior: none;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
         }
 
         @keyframes gradientBG {
@@ -89,7 +89,7 @@
 
         /* Estilos del Juego */
         .warm-pulse {
-            animation: heartbeat 2s infinite ease-in-out;
+            animation: heartbeat 1.5s infinite ease-in-out !important;
             box-shadow: 0 0 40px var(--soft-glow) !important;
             border-color: var(--primary) !important;
         }
@@ -112,24 +112,73 @@
             border: 2px solid transparent;
             white-space: pre-wrap;
             transition: all 0.3s ease; color: #546e7a;
+            user-select: none;
+            -webkit-user-select: none;
         }
 
-        .slider-wrapper { margin: 30px 0; touch-action: none; }
+        /* Texto desencriptado visible */
+        .decrypted-text {
+            color: #01579b !important;
+            font-weight: 500;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        .slider-wrapper { 
+            margin: 30px 0; 
+            touch-action: pan-y;
+            padding: 0 5px;
+        }
         
-        input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; }
+        input[type=range] { 
+            -webkit-appearance: none; 
+            width: 100%; 
+            background: transparent; 
+            height: 50px;
+        }
         input[type=range]::-webkit-slider-runnable-track {
-            height: 8px; background: rgba(1, 87, 155, 0.1); border-radius: 4px;
+            height: 10px; 
+            background: rgba(1, 87, 155, 0.15); 
+            border-radius: 5px;
+            transition: all 0.3s ease;
         }
         input[type=range]::-webkit-slider-thumb {
             -webkit-appearance: none;
-            height: 32px; width: 32px; border-radius: 50%;
-            background: #ffffff; border: 3px solid var(--primary);
-            cursor: pointer; margin-top: -12px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            height: 42px; width: 42px;
+            border-radius: 50%;
+            background: #ffffff; 
+            border: 3px solid var(--primary);
+            cursor: pointer; 
+            margin-top: -16px;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+            transition: all 0.2s ease;
+        }
+        input[type=range]::-webkit-slider-thumb:active {
+            transform: scale(1.1);
+            border-color: #0288d1;
+        }
+        
+        /* Feedback visual para cercanía */
+        .close-feedback {
+            background: rgba(79, 195, 247, 0.2) !important;
+            box-shadow: 0 0 0 3px rgba(79, 195, 247, 0.3) !important;
+        }
+        .very-close-feedback {
+            background: rgba(79, 195, 247, 0.4) !important;
+            box-shadow: 0 0 0 3px rgba(79, 195, 247, 0.5) !important;
         }
 
         /* Sección Final y Poema */
-        #final { display: none; }
+        #final { 
+            display: none;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 1s ease-out;
+        }
+        
+        #final.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
 
         #poem-container {
             font-family: 'Dancing Script', cursive;
@@ -145,8 +194,8 @@
             opacity: 0;
             transform: translateY(15px);
             transition: all 0.8s ease-out;
-            display: block; /* Fuerza salto de línea */
-            min-height: 1.5rem; /* Mantiene espacio para líneas vacías */
+            display: block;
+            min-height: 1.5rem;
         }
         .poem-line.visible {
             opacity: 1;
@@ -160,8 +209,14 @@
             display: flex; align-items: center; justify-content: center;
             cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.1);
             z-index: 100; font-size: 1.2rem; opacity: 0; transition: opacity 1s;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
         }
         .music-control.show { opacity: 1; }
+        .music-control:active {
+            transform: scale(0.95);
+            transition: transform 0.1s;
+        }
 
         .bubble {
             position: absolute; background: rgba(255, 255, 255, 0.5);
@@ -174,32 +229,121 @@
             100% { transform: translateY(-10vh) scale(1); opacity: 0; }
         }
 
-        /* --- OPTIMIZACIÓN PARA MÓVILES --- */
+        /* Mensaje de éxito temporal */
+        .success-message {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.8);
+            background: rgba(255, 255, 255, 0.95);
+            padding: 25px 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            text-align: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.5s ease;
+            border: 3px solid var(--primary);
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.8rem;
+            color: var(--text);
+        }
+        
+        .success-message.show {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        /* --- OPTIMIZACIÓN AVANZADA PARA MÓVILES --- */
         @media (max-width: 768px) {
-            body { padding: 10px; }
-            .container { padding: 30px 20px; border-radius: 25px; }
-            h1 { font-size: 2.5rem; }
+            body { 
+                padding: 10px; 
+                min-height: -webkit-fill-available;
+            }
+            .container { 
+                padding: 25px 15px; 
+                border-radius: 25px;
+                margin-top: 10px;
+            }
+            h1 { 
+                font-size: 2.5rem; 
+                margin-bottom: 10px;
+            }
             .intro-heart { font-size: 5rem; }
             .intro-text { font-size: 2rem; }
-            #ciphertext { font-size: 1rem; padding: 15px; min-height: 150px; }
-            #poem-container { font-size: 1.5rem; line-height: 1.5; }
-            .signature { font-size: 1.5rem !important; margin-top: 30px !important; }
-            /* Hacer el deslizador más fácil de tocar en móvil */
+            #ciphertext { 
+                font-size: 1rem; 
+                padding: 15px; 
+                min-height: 140px;
+                margin: 15px 0;
+            }
+            #poem-container { 
+                font-size: 1.5rem; 
+                line-height: 1.5;
+                margin: 20px 0;
+            }
+            .signature { 
+                font-size: 1.5rem !important; 
+                margin-top: 30px !important; 
+            }
+            
+            input[type=range] {
+                height: 60px;
+            }
             input[type=range]::-webkit-slider-thumb {
-                height: 36px; width: 36px; margin-top: -14px;
+                height: 46px; 
+                width: 46px; 
+                margin-top: -18px;
+                border-width: 4px;
+            }
+            input[type=range]::-webkit-slider-runnable-track {
+                height: 12px;
+            }
+            
+            .success-message {
+                width: 80%;
+                padding: 20px 25px;
+                font-size: 1.5rem;
+            }
+            
+            .warm-pulse {
+                animation-duration: 1.2s !important;
+            }
+        }
+        
+        @media (max-width: 380px) {
+            h1 { font-size: 2rem; }
+            .container { padding: 20px 12px; }
+            #ciphertext { font-size: 0.9rem; min-height: 120px; }
+            #poem-container { font-size: 1.3rem; }
+            .success-message { font-size: 1.3rem; padding: 15px 20px; }
+        }
+        
+        /* Prevenir zoom en inputs en iOS */
+        @media screen and (-webkit-min-device-pixel-ratio:0) {
+            select,
+            textarea,
+            input {
+                font-size: 16px !important;
             }
         }
     </style>
 </head>
 <body>
 
-    <audio id="bgMusic" loop>
+    <audio id="bgMusic" loop preload="auto">
         <source src="01. Dearly Beloved.mp3" type="audio/mpeg">
     </audio>
 
     <div id="intro-screen">
         <div class="intro-heart">💙</div>
-        <div class="intro-text">Pulsa aquí</div>
+        <div class="intro-text">Toca aquí</div>
+    </div>
+
+    <div class="success-message" id="successMessage">
+        💙<br>
+        <span style="font-size: 1.2rem; display: block; margin-top: 10px;">Aquí viene el regalo...</span>
     </div>
 
     <div class="music-control" onclick="toggleMusic()" id="musicBtn">🎵</div>
@@ -207,7 +351,7 @@
     <div class="container" id="main-card">
         <div id="game">
             <h1>Para Hennys...</h1>
-            <p style="font-weight: 300; margin-bottom: 25px;">Desliza suavemente hasta sentir la frecuencia correcta.</p>
+            <p style="font-weight: 300; margin-bottom: 25px;">Desliza para obtener la sorpresa...</p>
             <pre id="ciphertext"></pre>
             
             <div class="slider-wrapper">
@@ -252,9 +396,12 @@ pueda doler,
 la esperanza empieza
 con un paso incierto,
 ya que siempre florece
-después de la tormenta.`;
+después de la tormenta.
 
-        const targetShift = 13; // CAMBIADO AL 14
+
+FELIZ CUMPLEAÑOS...`;
+
+        const targetShift = 14; 
         const bgMusic = document.getElementById('bgMusic');
         const ciphertextEl = document.getElementById('ciphertext');
         const shiftInput = document.getElementById('shift');
@@ -264,13 +411,24 @@ después de la tormenta.`;
         const poemContainerEl = document.getElementById('poem-container');
         const introScreen = document.getElementById('intro-screen');
         const musicBtn = document.getElementById('musicBtn');
+        const sliderTrack = shiftInput;
+        const successMessage = document.getElementById('successMessage');
         
         let winTimer = null;
         let won = false;
+        let lastVibration = 0;
+        let poemFullyVisible = false;
 
-        // --- LÓGICA INTRO ---
+
         introScreen.addEventListener('click', () => {
-            bgMusic.play().catch(e => console.log("Audio play failed:", e));
+            bgMusic.play().then(() => {
+                console.log("Música iniciada");
+            }).catch(e => {
+                console.log("Reproducción automática bloqueada:", e);
+                musicBtn.style.opacity = '1';
+                musicBtn.classList.add('show');
+            });
+            
             introScreen.classList.add('fade-out');
             setTimeout(() => {
                 mainCard.classList.add('container-visible');
@@ -278,21 +436,29 @@ después de la tormenta.`;
             }, 300);
         }, { once: true });
 
+        document.addEventListener('touchstart', function initAudio() {
+            if (bgMusic.paused) {
+                bgMusic.play().catch(e => console.log("Audio aún no disponible"));
+            }
+            document.removeEventListener('touchstart', initAudio);
+        }, { once: true });
 
-        // --- Cifrado César ---
         function caesar(text, shift) {
             return text.split('').map(char => {
-                if (char.match(/[a-z]/i)) {
+                if (char.match(/[a-záéíóúñ]/i)) {
                     const code = char.charCodeAt(0);
-                    const base = code >= 65 && code <= 90 ? 65 : 97;
-                    return String.fromCharCode(((code - base + shift) % 26) + base);
+                    if ((code >= 65 && code <= 90) || (code >= 97 && code <= 122)) {
+                        const base = code >= 65 && code <= 90 ? 65 : 97;
+                        return String.fromCharCode(((code - base + shift + 26) % 26) + base);
+                    }
                 }
                 return char;
             }).join('');
         }
 
-        const encrypted = caesar(originalPoem, targetShift);
-        ciphertextEl.textContent = encrypted;
+    
+        const encryptedPoem = caesar(originalPoem, targetShift);
+        ciphertextEl.textContent = encryptedPoem;
 
         function update() {
             if (won) return;
@@ -300,30 +466,74 @@ después de la tormenta.`;
             shiftValue.textContent = val;
             
             const distance = Math.abs(val - targetShift);
-            ciphertextEl.textContent = caesar(encrypted, val);
+            
+            let decryptedText;
+            if (val === targetShift) {
+                decryptedText = originalPoem;
+                ciphertextEl.classList.add('decrypted-text');
+                
 
-            // --- VIBRACIÓN PROGRESIVA ---
+                if (!poemFullyVisible) {
+                    successMessage.classList.add('show');
+                    setTimeout(() => {
+                        successMessage.classList.remove('show');
+                    }, 2000);
+                    poemFullyVisible = true;
+                }
+            } else {
+                const shiftAmount = targetShift - val;
+                decryptedText = caesar(encryptedPoem, shiftAmount);
+                ciphertextEl.classList.remove('decrypted-text');
+                poemFullyVisible = false;
+            }
+            
+            ciphertextEl.textContent = decryptedText;
+
+
             if ('vibrate' in navigator) {
-                if (distance === 0) {
-                    // Vibración fuerte y larga al llegar
-                    navigator.vibrate([80, 30, 80]); 
-                } else if (distance <= 2) {
-                     // Vibración media si está muy cerca (1 o 2 de distancia)
-                    navigator.vibrate(40);
-                } else if (distance <= 4) {
-                    // Vibración corta y sutil si se acerca
-                    navigator.vibrate(15);
+                const now = Date.now();
+                if (now - lastVibration > 200) {
+                    let vibrationPattern = [];
+                    
+                    if (distance === 0) {
+                        vibrationPattern = [100, 50, 100, 50, 150];
+                        mainCard.classList.add('warm-pulse');
+                        sliderTrack.classList.remove('close-feedback', 'very-close-feedback');
+                    } 
+                    else if (distance === 1) {
+                        vibrationPattern = [80, 40, 80];
+                        sliderTrack.classList.add('very-close-feedback');
+                        sliderTrack.classList.remove('close-feedback');
+                    } 
+                    else if (distance === 2) {
+                        vibrationPattern = [60, 30, 60];
+                        sliderTrack.classList.add('close-feedback');
+                        sliderTrack.classList.remove('very-close-feedback');
+                    } 
+                    else if (distance <= 4) {
+                        vibrationPattern = [30];
+                        sliderTrack.classList.add('close-feedback');
+                        sliderTrack.classList.remove('very-close-feedback');
+                    }
+                    else {
+                        sliderTrack.classList.remove('close-feedback', 'very-close-feedback');
+                        mainCard.classList.remove('warm-pulse');
+                    }
+                    
+                    if (vibrationPattern.length > 0) {
+                        navigator.vibrate(vibrationPattern);
+                        lastVibration = now;
+                    }
                 }
             }
 
-            // Animación y Temporizador
+            
             if (distance === 0) {
-                mainCard.classList.add('warm-pulse');
                 if (!winTimer) {
-                    winTimer = setTimeout(triggerWin, 1500); // 1.5s de espera
+                    
+                    winTimer = setTimeout(triggerWin, 2000);
                 }
             } else {
-                mainCard.classList.remove('warm-pulse');
                 clearTimeout(winTimer);
                 winTimer = null;
             }
@@ -332,60 +542,108 @@ después de la tormenta.`;
         function triggerWin() {
             won = true;
             mainCard.classList.remove('warm-pulse');
+            sliderTrack.classList.remove('close-feedback', 'very-close-feedback');
             document.getElementById('game').style.display = 'none';
-            finalSection.style.display = 'block';
             
-            // --- APARICIÓN PROGRESIVA DEL POEMA (MANTENIENDO FORMATO) ---
-            // Dividimos el poema por saltos de línea
+       
+            setTimeout(() => {
+                finalSection.style.display = 'block';
+                setTimeout(() => {
+                    finalSection.classList.add('visible');
+                }, 50);
+            }, 300);
+        
+            if ('vibrate' in navigator) {
+                navigator.vibrate([200, 100, 200, 100, 300]);
+            }
+            
+       
             const lines = originalPoem.split('\n');
             
             lines.forEach((line, index) => {
                 const lineSpan = document.createElement('span');
                 lineSpan.className = 'poem-line';
-                // Si la línea está vacía, usamos un espacio sin ruptura para mantener la estrofa
                 lineSpan.innerHTML = line.trim() === '' ? '&nbsp;' : line;
                 poemContainerEl.appendChild(lineSpan);
 
-                // Hacemos aparecer cada línea con un retraso progresivo
                 setTimeout(() => {
                     lineSpan.classList.add('visible');
-                }, index * 600); // 600ms entre cada línea
+                }, index * 550);
             });
 
-            // Confeti
-            const count = 200;
-            const defaults = { origin: { y: 0.7 }, colors: ['#4fc3f7', '#ffffff', '#e1f5fe'] };
+   
+            const count = 150;
+            const defaults = { 
+                origin: { y: 0.7 }, 
+                colors: ['#4fc3f7', '#ffffff', '#e1f5fe'],
+                disableForReducedMotion: true
+            };
+            
             function fire(particleRatio, opts) {
-                confetti({ ...defaults, ...opts, particleCount: Math.floor(count * particleRatio) });
+                confetti({ 
+                    ...defaults, 
+                    ...opts, 
+                    particleCount: Math.floor(count * particleRatio),
+                    scalar: window.innerWidth < 768 ? 0.8 : 1
+                });
             }
+            
             fire(0.25, { spread: 26, startVelocity: 55 });
             fire(0.2, { spread: 60 });
             fire(0.35, { spread: 100, decay: 0.91, scalar: 0.8 });
             fire(0.1, { spread: 120, startVelocity: 25, decay: 0.92, scalar: 1.2 });
+            
+            setTimeout(() => {
+                fire(0.15, { spread: 70, startVelocity: 45 });
+            }, 1000);
         }
 
         function toggleMusic() {
-            if (bgMusic.paused) { bgMusic.play(); musicBtn.textContent = '🎵'; } 
-            else { bgMusic.pause(); musicBtn.textContent = '🔇'; }
+            if (bgMusic.paused) { 
+                bgMusic.play(); 
+                musicBtn.textContent = '🎵'; 
+                musicBtn.style.background = 'white';
+            } 
+            else { 
+                bgMusic.pause(); 
+                musicBtn.textContent = '🔇'; 
+                musicBtn.style.background = '#f5f5f5';
+            }
         }
 
         function createBubbles() {
-            for (let i = 0; i < 12; i++) {
+            for (let i = 0; i < 8; i++) {
                 const b = document.createElement('div');
                 b.className = 'bubble';
-                const size = Math.random() * 40 + 10 + 'px';
-                b.style.width = size; b.style.height = size;
+                const size = Math.random() * 30 + 10 + 'px';
+                b.style.width = size; 
+                b.style.height = size;
                 b.style.left = Math.random() * 100 + 'vw';
-                b.style.animationDuration = Math.random() * 10 + 10 + 's';
-                b.style.animationDelay = Math.random() * 5 + 's';
+                b.style.animationDuration = Math.random() * 10 + 15 + 's';
+                b.style.animationDelay = Math.random() * 3 + 's';
+                b.style.opacity = 0.6;
                 document.body.appendChild(b);
             }
         }
 
-        shiftInput.oninput = update;
-        // Para móviles, también escuchamos el evento touchmove para mejor respuesta
-        shiftInput.addEventListener('touchmove', update);
+
+        shiftInput.addEventListener('input', update);
+        shiftInput.addEventListener('touchmove', update, { passive: true });
+        shiftInput.addEventListener('touchend', update);
+        
+        shiftInput.addEventListener('touchstart', (e) => {
+            e.stopPropagation();
+        }, { passive: true });
+        
+
         createBubbles();
+        
+
+        document.addEventListener('DOMContentLoaded', function() {
+            if (/iPhone|iPad|iPod/.test(navigator.userAgent)) {
+                document.body.style.webkitBackfaceVisibility = 'hidden';
+            }
+        });
     </script>
 </body>
 </html>
