@@ -34,59 +34,6 @@
             width: 100%;
             max-width: 600px;
         }
-        #knob-container {
-            width: 300px;
-            height: 300px;
-            margin: 40px auto;
-        }
-        #knob {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.9);
-            position: relative;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
-            cursor: grab;
-        }
-        #knob:active {
-            cursor: grabbing;
-        }
-        #pointer {
-            position: absolute;
-            left: 50%;
-            top: 50%;
-            width: 12px;
-            height: 140px;
-            background: #007bff;
-            border-radius: 6px;
-            transform: translate(-50%, -100%) rotate(0deg);
-            transform-origin: bottom center;
-            box-shadow: 0 0 15px rgba(0, 123, 255, 0.6);
-        }
-        #centerValue {
-            position: absolute;
-            left: 50%;
-            top: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 3.5rem;
-            font-weight: bold;
-            color: #007bff;
-        }
-        .tick {
-            position: absolute;
-            left: 50%;
-            top: 50%;
-            background: #007bff;
-            border-radius: 2px;
-        }
-        .label {
-            position: absolute;
-            left: 50%;
-            top: 50%;
-            font-size: 1.4rem;
-            font-weight: bold;
-            color: #001f3f;
-        }
         #ciphertext {
             background: rgba(255, 255, 255, 0.8);
             padding: 30px;
@@ -100,7 +47,17 @@
             transition: opacity 0.4s ease;
             white-space: pre-wrap;
             word-wrap: break-word;
-            color: #001f3f;
+        }
+        label {
+            font-size: 1.4rem;
+            margin: 20px 0 10px;
+            display: block;
+        }
+        #shift {
+            width: 90%;
+            height: 40px;
+            margin: 20px auto;
+            display: block;
         }
         #final {
             display: none;
@@ -118,6 +75,7 @@
             line-height: 2.4;
             color: #001f3f;
             margin: 40px 0;
+            text-align: center;
         }
         .signature {
             font-style: italic;
@@ -129,16 +87,12 @@
 </head>
 <body>
     <h1>¡Feliz Cumpleaños, Hennys! 💙</h1>
-    <p class="intro">Silver te ha escondido un poema muy especial.<br>Gira la rueda para descifrarlo...</p>
+    <p class="intro"> Hay algo muy especial escondido, espero que te guste...<br>Gira el deslizador para descifrarlo...</p>
 
     <div id="game">
-        <div id="knob-container">
-            <div id="knob">
-                <div id="pointer"></div>
-                <div id="centerValue">0</div>
-            </div>
-        </div>
         <pre id="ciphertext"></pre>
+        <label for="shift">Desplazamiento: <span id="shiftValue">0</span></label>
+        <input type="range" id="shift" min="0" max="25" value="0">
     </div>
 
     <div id="final">
@@ -190,65 +144,23 @@ después de la tormenta.`;
         const encrypted = caesar(original, shiftAmount);
 
         const ciphertextEl = document.getElementById('ciphertext');
-        const knob = document.getElementById('knob');
-        const pointer = document.getElementById('pointer');
-        const centerValue = document.getElementById('centerValue');
+        const shiftInput = document.getElementById('shift');
+        const shiftValue = document.getElementById('shiftValue');
         const game = document.getElementById('game');
         const finalSection = document.getElementById('final');
         const poemEl = document.getElementById('poem');
 
         let won = false;
-        let isDragging = false;
-        let centerX, centerY;
-        const degreesPerStep = 360 / 26;
 
-        // Generar marcas precisas (una por cada número) y etiquetas cada 5
-        const radiusTick = 130;
-        const radiusLabel = 170;
-        for (let i = 0; i < 26; i++) {
-            const angle = i * degreesPerStep;
-            const tick = document.createElement('div');
-            tick.className = 'tick';
-            tick.style.width = (i % 5 === 0 ? '6px' : '3px');
-            tick.style.height = (i % 5 === 0 ? '40px' : '25px');
-            tick.style.transform = `translate(-50%, -50%) rotate(${angle}deg) translateY(-${radiusTick}px)`;
-            knob.appendChild(tick);
+        function updateText() {
+            if (won) return;
 
-            if (i % 5 === 0) {
-                const label = document.createElement('div');
-                label.className = 'label';
-                label.textContent = i;
-                label.style.transform = `translate(-50%, -50%) rotate(${angle}deg) translateY(-${radiusLabel}px) rotate(-${angle}deg)`;
-                knob.appendChild(label);
-            }
-        }
+            const currentShift = parseInt(shiftInput.value);
+            shiftValue.textContent = currentShift;
 
-        function getTouchPos(e) {
-            return {
-                x: e.touches ? e.touches[0].clientX : e.clientX,
-                y: e.touches ? e.touches[0].clientY : e.clientY
-            };
-        }
+            const decrypted = caesar(encrypted, currentShift);
 
-        function updateShift(e) {
-            if (!isDragging) return;
-
-            const pos = getTouchPos(e);
-            const dx = pos.x - centerX;
-            const dy = pos.y - centerY;
-
-            let rawAngle = Math.atan2(dy, dx) * 180 / Math.PI;
-            if (rawAngle < 0) rawAngle += 360;
-            let angle = (rawAngle + 90) % 360; // 0 arriba
-
-            pointer.style.transform = `translate(-50%, -100%) rotate(${angle}deg)`;
-
-            let shift = Math.round(angle / degreesPerStep) % 26;
-            centerValue.textContent = shift;
-
-            const decrypted = caesar(encrypted, shift);
-
-            // Fade suave
+            // Fade animation
             ciphertextEl.style.opacity = 0;
             setTimeout(() => {
                 ciphertextEl.textContent = decrypted;
@@ -261,38 +173,12 @@ después de la tormenta.`;
             }, 400);
         }
 
-        knob.addEventListener('mousedown', (e) => {
-            isDragging = true;
-            const rect = knob.getBoundingClientRect();
-            centerX = rect.left + rect.width / 2;
-            centerY = rect.top + rect.height / 2;
-            updateShift(e);
-        });
-
-        knob.addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            isDragging = true;
-            const rect = knob.getBoundingClientRect();
-            centerX = rect.left + rect.width / 2;
-            centerY = rect.top + rect.height / 2;
-            updateShift(e);
-        });
-
-        document.addEventListener('mousemove', updateShift);
-        document.addEventListener('touchmove', (e) => {
-            e.preventDefault();
-            updateShift(e);
-        });
-
-        document.addEventListener('mouseup', () => isDragging = false);
-        document.addEventListener('touchend', () => isDragging = false);
-
         function triggerWin() {
             game.style.display = 'none';
             finalSection.style.display = 'block';
             poemEl.textContent = original;
 
-            // Confeti
+            // Confeti explosión
             const burst = () => {
                 confetti({
                     particleCount: 150,
@@ -310,6 +196,7 @@ después de la tormenta.`;
 
         // Inicial
         ciphertextEl.textContent = encrypted;
+        shiftInput.oninput = updateText;
     </script>
 </body>
 </html>
